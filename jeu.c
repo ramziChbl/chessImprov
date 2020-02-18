@@ -901,30 +901,45 @@ int minmax_ab( struct config conf, int mode, int niv, int alpha, int beta )
 
 
 /* Intialise la disposition des pieces dans la configuration initiale conf */
-void init( struct config *conf )
+void init( struct config *conf , int choixConf)
 {
    	int i, j;
 
-    	for (i=0; i<8; i++)
+    for (i=0; i<8; i++)
 		for (j=0; j<8; j++)
 			conf->mat[i][j] = 0;	// Les cases vides sont initialisées avec 0
 
-	conf->mat[0][0] =  't'; conf->mat[0][1] =  'c'; conf->mat[0][2] = 'f'; conf->mat[0][3] =  'n';
-	conf->mat[0][4] =  'r'; conf->mat[0][5] =  'f'; conf->mat[0][6] = 'c'; conf->mat[0][7] =  't';
+	switch(choixConf)
+	{
+		case 1:
+			conf->mat[0][6] = 't';	conf->mat[1][1] = 't';	conf->mat[1][5] = 'r';
+			conf->mat[4][3] = -'r';
+			break;
 
-	for (j=0; j<8; j++) {
-		conf->mat[1][j] = 'p';
- 		conf->mat[6][j] = -'p'; 
-		conf->mat[7][j] = -conf->mat[0][j];
+		case 2:
+			conf->mat[0][0] = 'r';	conf->mat[0][1] = 'n';
+			conf->mat[5][4] = -'r';
+			break;
+
+		default:
+			conf->mat[0][0] =  't'; conf->mat[0][1] =  'c'; conf->mat[0][2] = 'f'; conf->mat[0][3] =  'n';
+			conf->mat[0][4] =  'r'; conf->mat[0][5] =  'f'; conf->mat[0][6] = 'c'; conf->mat[0][7] =  't';
+		
+			for (j=0; j<8; j++) {
+				conf->mat[1][j] = 'p';
+		 		conf->mat[6][j] = -'p'; 
+				conf->mat[7][j] = -conf->mat[0][j];
+			}
+		
+			conf->xrB = 0; conf->yrB = 4;
+			conf->xrN = 7; conf->yrN = 4;
+		
+			conf->roqueB = 'r';
+			conf->roqueN = 'r';
+			conf->val = 0;
+			break;
 	}
-
-	conf->xrB = 0; conf->yrB = 4;
-	conf->xrN = 7; conf->yrN = 4;
-
-	conf->roqueB = 'r';
-	conf->roqueN = 'r';
-
-	conf->val = 0;
+	
 
 } // init
 
@@ -973,18 +988,29 @@ int main( int argc, char *argv[] )
    char sy, dy, ch[10];
    int sx, dx, n, i, j, score, stop, cout, cout2, legal, hauteur, sauter;
    int cmin, cmax;
+   int choixConf = 0;
 
    struct config T[100], conf, conf1;
 
-   if ( argc == 1 ) 
-	hauteur = 4;  // par défaut on fixe la profondeur d'évaluation à 4
-   else
-	hauteur = atoi( argv[1] ); // sinon elle est récupérée depuis la ligne de commande
+	if ( argc == 1 ) 
+		hauteur = 4;  // par défaut on fixe la profondeur d'évaluation à 4
+	else if (argc == 2)
+   	{
+   		choixConf = atoi( argv[1] );
+   	}
+	else if (argc == 3)
+		hauteur = atoi( argv[2] ); // sinon elle est récupérée depuis la ligne de commande
+
+	else
+	{
+		printf("Erreur dans la saisie des arguments.\n");
+		printf("Utilisation : ./jeu [config initiale] [profondeur]\n");
+	}
 
    printf("\n\nProfondeur d'exploration = %d\n\n", hauteur);
 
    // Initialise la configuration de départ
-   init( &conf );
+   init( &conf , choixConf);
   
    printf("\n\nVous êtes les + (Blancs) et je suis les - (Noirs)\n\n");
 
