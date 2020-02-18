@@ -914,11 +914,23 @@ void init( struct config *conf , int choixConf)
 		case 1:
 			conf->mat[0][6] = 't';	conf->mat[1][1] = 't';	conf->mat[1][5] = 'r';
 			conf->mat[4][3] = -'r';
+
+			conf->xrB = 1; conf->yrB = 5;
+			conf->xrN = 4; conf->yrN = 3;
+
+			conf->roqueB = 'e';
+			conf->roqueN = 'e';
 			break;
 
 		case 2:
 			conf->mat[0][0] = 'r';	conf->mat[0][1] = 'n';
 			conf->mat[5][4] = -'r';
+
+			conf->xrB = 0; conf->yrB = 0;
+			conf->xrN = 5; conf->yrN = 4;
+
+			conf->roqueB = 'e';
+			conf->roqueN = 'e';
 			break;
 
 		default:
@@ -939,8 +951,6 @@ void init( struct config *conf , int choixConf)
 			conf->val = 0;
 			break;
 	}
-	
-
 } // init
 
 
@@ -973,10 +983,6 @@ void affich( struct config conf )
 
 } // affich
 
-
-
-
-
 /*******************************************/
 /*********** Programme princiapl ***********/
 /*******************************************/
@@ -999,16 +1005,20 @@ int main( int argc, char *argv[] )
    		choixConf = atoi( argv[1] );
    	}
 	else if (argc == 3)
+	{
+		choixConf = atoi( argv[1] );
 		hauteur = atoi( argv[2] ); // sinon elle est récupérée depuis la ligne de commande
+	}
 
 	else
 	{
 		printf("Erreur dans la saisie des arguments.\n");
 		printf("Utilisation : ./jeu [config initiale] [profondeur]\n");
+		return -1;
 	}
 
    printf("\n\nProfondeur d'exploration = %d\n\n", hauteur);
-
+   printf("Configuration choisie = %d\n", choixConf);
    // Initialise la configuration de départ
    init( &conf , choixConf);
   
