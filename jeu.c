@@ -43,6 +43,7 @@ int D[8][2] = { {+1,0} , {+1,+1} , {0,+1} , {-1,+1} , {-1,0} , {-1,-1} , {0,-1} 
 
 // evalue avec alpha beta la configuration 'conf' du joueur 'mode' en descendant de 'niv' niveaux
 int minmax_ab( struct config conf, int mode, int niv, int min, int max );
+void generer_succ( struct config conf, int mode, struct config T[], int *n );
 
 
 /* Copie la configuration c1 dans c2  */
@@ -87,9 +88,48 @@ int egal(char c1[8][8], char c2[8][8] )
 /* Teste s'il n'y a aucun coup possible dans la configuration conf */
 int AucunCoupPossible( struct config conf )
 {
+    
       	// ... A completer pour les matchs nuls
 	// ... vérifier que generer_succ retourne 0 configurations filles ...
-	return 0;
+	int pionB = 0, pionN = 0, cfB = 0, cfN = 0, tB = 0, tN = 0, nB = 0, nN = 0;
+	for (int i = 0; i < 8; ++i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
+			switch (conf.mat[i][j]) {
+			   	case 'p' : pionB++;   break;
+				case 'c' : 
+				case 'f' : cfB++;  break;
+				case 't' : tB++; break;
+				case 'n' : nB++;  break;
+
+				case -'p' : pionN++;  break;
+				case -'c' : 
+				case -'f' : cfN++;  break;
+				case -'t' : tN++; break;
+				case -'n' : nN++;  break;
+			}
+		}
+	}
+	if(pionB+pionN == 0 && nB+nN == 0)
+	{
+		if((tN + tB == 0 && cfB + cfN <= 1))
+		{
+			return 1;
+		}
+	}
+	//void generer_succ( struct config conf, int mode, struct config T[], int *n )
+	else
+	{
+		int n = 0, m = 0;
+		struct config T[100];
+		generer_succ( conf, MIN, T, &n );
+		if(n == 0)
+			return 1;
+
+		else
+			return 0;
+	}
 
 } // AucunCoupPossible
 
@@ -115,8 +155,10 @@ int feuille( struct config conf, int *cout )
 
 	// Si Match nul cout = 0
 	if (  conf.xrB != -1 &&  conf.xrN != -1 && AucunCoupPossible( conf ) )
-	   return 1;
-
+	{
+		printf("Match Nul.\n\n");	
+		return 1;
+	}
 	// Sinon ce n'est pas une config feuille 
 	return 0;
 
@@ -339,9 +381,6 @@ int estim(struct config conf)
 /*
 int estim( struct config conf )
 {
-
-
-
 // ********************************************************
 // Remplacer ce code par une estimation de meilleur qualité
 // ********************************************************
@@ -1005,6 +1044,21 @@ void init( struct config *conf , int choixConf)
 
 			conf->roqueB = 'e';
 			conf->roqueN = 'e';
+			break;
+
+		case 3:
+			conf->mat[1][0] = 'p';	conf->mat[1][3] = 'r'; conf->mat[1][6] = 'p';
+			conf->mat[2][4] = 'c';	conf->mat[2][5] = 'p';
+			
+			conf->mat[6][2] = -'p';	conf->mat[6][4] = -'r'; conf->mat[6][7] = -'p';
+			conf->mat[5][0] = -'p'; conf->mat[5][2] = 'p';
+			conf->mat[4][1] = -'p';
+			conf->mat[3][3] = -'f';
+			break;
+
+		case 4:
+			conf->mat[1][3] = 'r';
+			conf->mat[5][6] = -'r';
 			break;
 
 		default:
