@@ -117,6 +117,7 @@ int AucunCoupPossible( struct config conf )
 		{
 			return 1;
 		}
+		return 0;
 	}
 	//void generer_succ( struct config conf, int mode, struct config T[], int *n )
 	else
@@ -125,12 +126,14 @@ int AucunCoupPossible( struct config conf )
 		struct config T[100];
 		generer_succ( conf, MIN, T, &n );
 		if(n == 0)
+		{
+			printf("NO SUCK\n");
 			return 1;
+		}
 
-		else
-			return 0;
+		return 0;
 	}
-
+	return 0;
 } // AucunCoupPossible
 
 
@@ -156,7 +159,7 @@ int feuille( struct config conf, int *cout )
 	// Si Match nul cout = 0
 	if (  conf.xrB != -1 &&  conf.xrN != -1 && AucunCoupPossible( conf ) )
 	{
-		printf("Match Nul.\n\n");	
+		//printf("Match Nul.\n\n");	
 		return 1;
 	}
 	// Sinon ce n'est pas une config feuille 
@@ -1005,8 +1008,8 @@ int minmax_ab( struct config conf, int mode, int niv, int alpha, int beta )
 	   }
 	}
 
-        if ( score == +INFINI ) score = +100;
-        if ( score == -INFINI ) score = -100;
+    if ( score == +INFINI ) score = +100;
+    if ( score == -INFINI ) score = -100;
 
 	return score;
 
@@ -1059,6 +1062,11 @@ void init( struct config *conf , int choixConf)
 		case 4:
 			conf->mat[1][3] = 'r';
 			conf->mat[5][6] = -'r';
+			break;
+
+		case 5:
+			conf->mat[0][1] = 't';	conf->mat[1][4] = 'r';
+			conf->mat[7][1] = -'c';	conf->mat[6][3] = -'r';
 			break;
 
 		default:
@@ -1130,12 +1138,12 @@ int main( int argc, char *argv[] )
 		hauteur = 4;  // par défaut on fixe la profondeur d'évaluation à 4
 	else if (argc == 2)
    	{
-   		choixConf = atoi( argv[1] );
+   		hauteur = atoi( argv[1] ); // sinon elle est récupérée depuis la ligne de commande
    	}
 	else if (argc == 3)
 	{
-		choixConf = atoi( argv[1] );
-		hauteur = atoi( argv[2] ); // sinon elle est récupérée depuis la ligne de commande
+		hauteur = atoi( argv[1] );
+		choixConf = atoi( argv[2] ); 
 	}
 
 	else
@@ -1251,9 +1259,15 @@ int main( int argc, char *argv[] )
 	   }
 	   else
 	    	if ( !legal ) 
-	   	   printf("Coup illégal -- réessayer\n");
+	   	   		printf("Coup illégal -- réessayer\n");
 	    	else
-		   stop = 1;
+		   	{
+				stop = 1;
+				if (cout == 0)
+				{
+					printf("Match Nul!\n");
+				}
+		   	}
 	}  // if (sauter == 0)
    } // while
 
