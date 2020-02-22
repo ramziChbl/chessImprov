@@ -127,7 +127,7 @@ int AucunCoupPossible( struct config conf )
 		generer_succ( conf, MIN, T, &n );
 		if(n == 0)
 		{
-			printf("NO SUCK\n");
+			//printf("NO SUCK\n");
 			return 1;
 		}
 
@@ -1067,6 +1067,22 @@ void init( struct config *conf , int choixConf)
 		case 5:
 			conf->mat[0][1] = 't';	conf->mat[1][4] = 'r';
 			conf->mat[7][1] = -'c';	conf->mat[6][3] = -'r';
+			break;
+
+		case 6:
+			conf->mat[0][6] = 'f';	conf->mat[0][7] = 'r';
+			conf->mat[1][3] = -'p';	conf->mat[1][4] = 't';
+			conf->mat[2][4] = 'c';	conf->mat[2][6] = 'n';
+			conf->mat[3][4] = -'r';	conf->mat[3][5] = 'c';	conf->mat[3][7] = 't';
+			conf->mat[4][2] = -'p';	conf->mat[4][6] = 'p';	conf->mat[4][7] = -'p';
+			conf->mat[5][3] = -'t';
+			conf->mat[6][1] = -'f';
+			conf->mat[7][6] = 'f';
+			break;
+
+		case 7:
+			conf->mat[0][1] = 't';	conf->mat[0][2] = -'c';	conf->mat[0][3] = -'r';
+			conf->mat[2][3] = 'r';
 			break;
 
 		default:
